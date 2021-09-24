@@ -24,8 +24,8 @@ func scrape(cmd *cobra.Command, args []string) error {
 	for mName, mData := range mF {
 		// TODO: Figure out how to make this _way_ more dynamic instead of proof-of-concepty
 		// BUG: This is also probably an excellent opportunity to figure out wtf channels and concurrency can do...
-		scorer := internal.NewModel(mData).WithFns([]internal.CardsScoreFn{
-			evals.NaiveUntypedScorer})
+		scorer := internal.NewModel(mData).WithFns(
+			evals.NaiveUntypedScorer)
 		finalScore, err := scorer.Evaluate()
 
 		if err != nil {

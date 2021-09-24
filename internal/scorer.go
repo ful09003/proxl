@@ -18,8 +18,8 @@ func NewModel(forFam *dto.MetricFamily) *CardsScoringModel {
 	}
 }
 
-func (m *CardsScoringModel) WithFns(c []CardsScoreFn) *CardsScoringModel {
-	m.criteria = c
+func (m *CardsScoringModel) WithFns(c ...CardsScoreFn) *CardsScoringModel {
+	m.criteria = append(m.criteria, c...)
 
 	return m
 }
