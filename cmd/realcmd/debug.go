@@ -13,7 +13,7 @@ func init() {
 }
 
 var debugCmd = &cobra.Command{
-	Use: "debug",
+	Use:   "debug",
 	Short: "Scrape Prometheus exporter",
 	Long: `
 Scrapes the desired Prometheus exporter target, and prints its output. Save yourself switching back to a browser!	
