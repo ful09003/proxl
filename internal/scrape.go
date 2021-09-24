@@ -39,24 +39,24 @@ func ParseMetricFamilies(b bytes.Buffer) (map[string]*dto.MetricFamily, error) {
 }
 
 type CardsHttpScraper struct {
-	Endpoint string // HTTP(s) endpoint representing a metrics exporter of the Prometheus text format type
-	maxRetries int // Maximum retries this scraper should utilize
-	b bytes.Buffer // Reusable bytes.Buffer containing the entire scrape response body
+	Endpoint   string       // HTTP(s) endpoint representing a metrics exporter of the Prometheus text format type
+	maxRetries int          // Maximum retries this scraper should utilize
+	b          bytes.Buffer // Reusable bytes.Buffer containing the entire scrape response body
 }
 
 // NewCardsHttpScraper instantiates a new HTTP-based scraper for Cards scoring. Retries are currently ignored.
-func NewCardsHttpScraper(endpoint string, retries int) (CardsHttpScraper) {
+func NewCardsHttpScraper(endpoint string, retries int) CardsHttpScraper {
 	var buf bytes.Buffer
 
 	return CardsHttpScraper{
-		Endpoint: endpoint,
+		Endpoint:   endpoint,
 		maxRetries: retries,
-		b: buf,
+		b:          buf,
 	}
 }
 
 // ScrapeTarget performs a single HTTP scrape to the configured target, returning Prometheus MetricFamily and optional error
-func (n *CardsHttpScraper) ScrapeTarget() (map[string]*dto.MetricFamily, error){
+func (n *CardsHttpScraper) ScrapeTarget() (map[string]*dto.MetricFamily, error) {
 	hC := http.Client{
 		Timeout: time.Duration(5 * time.Second),
 	}
@@ -64,13 +64,13 @@ func (n *CardsHttpScraper) ScrapeTarget() (map[string]*dto.MetricFamily, error){
 	log.WithFields(log.Fields{
 		"endpoint": n.Endpoint,
 	}).Info("attempting scrape")
-	
+
 	res, err := hC.Get(n.Endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("scrape error: %w", err)
 	}
 	log.WithFields(log.Fields{
-		"res_code": res.StatusCode,
+		"res_code":              res.StatusCode,
 		"res_content_len_bytes": res.ContentLength,
 	}).Info("received response")
 

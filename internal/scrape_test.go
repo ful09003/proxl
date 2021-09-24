@@ -211,7 +211,7 @@ func TestCardsHttpScraper_ScrapeTarget(t *testing.T) {
 			name: "happy scrape",
 			fields: fields{
 				Endpoint: fmt.Sprintf("%s/good_case", srv.URL),
-				b: bytes.Buffer{},
+				b:        bytes.Buffer{},
 			},
 			want: map[string]*dto.MetricFamily{
 				"joy_felt_total": &dto.MetricFamily{
@@ -222,8 +222,8 @@ func TestCardsHttpScraper_ScrapeTarget(t *testing.T) {
 						{
 							Label: []*dto.LabelPair{
 								{
-									Name: proto.String("developer"),
-									Value: proto.String("me"),	
+									Name:  proto.String("developer"),
+									Value: proto.String("me"),
 								},
 							},
 							Counter: &dto.Counter{
