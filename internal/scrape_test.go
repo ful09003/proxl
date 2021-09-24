@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"google.golang.org/protobuf/proto"
 	dto "github.com/prometheus/client_model/go"
+	"google.golang.org/protobuf/proto"
 )
 
 type FailableReader struct{}
