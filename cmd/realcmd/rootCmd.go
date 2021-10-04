@@ -38,7 +38,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVarP(&target, "target", "t", "http://localhost:9100/metrics", "HTTP endpoint to evaluate")
 	rootCmd.PersistentFlags().IntVarP(&multFactor, "mult", "m", 1, "Set to maximum estimated hosts being scraped by Prometheus")
-	rootCmd.PersistentFlags().StringVar(&ll, "loglevel", "undef", "log level to set")
+	rootCmd.PersistentFlags().StringVar(&ll, "loglevel", "info", "log level to set")
 
 	viper.BindPFlag("target", rootCmd.PersistentFlags().Lookup("target"))
 	viper.BindPFlag("mult", rootCmd.PersistentFlags().Lookup("mult"))
