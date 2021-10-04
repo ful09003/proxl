@@ -16,7 +16,8 @@ var debugCmd = &cobra.Command{
 	Use:   "debug",
 	Short: "Scrape Prometheus exporter",
 	Long: `
-Scrapes the desired Prometheus exporter target, and prints its output. Save yourself switching back to a browser!	
+Scrapes the desired Prometheus exporter target, and prints its output. Save yourself switching back to a browser!
+Note: This option will not present metric families in the order they appear on the exporter proper.
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		s := internal.NewCardsHttpScraper(target, 1)

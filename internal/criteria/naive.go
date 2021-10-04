@@ -1,3 +1,8 @@
+/*
+Package criteria homes various cards scoring functions. These are broken up logically by filename, with 'naive' scoring methods being found in naive.go, and so on.
+
+Scoring functions are expected to take in a pointer to a Prometheus MetricFamily, and return an int corresponding to the metricfamily "score" and optional error.
+*/
 package criteria
 
 import (
@@ -5,9 +10,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// NaiveUntypedScorer scores a MetricFamily against the total number of metrics of an unknown type
+// NaiveUntypedScorer scores a MetricFamily against the total number of metrics of an unknown type.
+// This is a 'naive' scorer, as an unknown metric type is not always a signal of poor exporter quality.
 func NaiveUntypedScorer(mF *dto.MetricFamily) (int, error) {
 	if *mF.Type.Enum() == dto.MetricType_UNTYPED {
+		log.WithField("mfam_name", mF.Name).Debug("untyped metricfamily found")
 		return 1, nil
 	}
 

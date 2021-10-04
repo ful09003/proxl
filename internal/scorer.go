@@ -11,6 +11,7 @@ type CardsScoringModel struct {
 	data     *dto.MetricFamily
 }
 
+// NewModel returns a Cards scoring model for the input MetricFamily.
 func NewModel(forFam *dto.MetricFamily) *CardsScoringModel {
 	return &CardsScoringModel{
 		criteria: []CardsScoreFn{},
@@ -18,6 +19,7 @@ func NewModel(forFam *dto.MetricFamily) *CardsScoringModel {
 	}
 }
 
+// WithFns adds a variable number of functions to a Cards ScoringModel
 func (m *CardsScoringModel) WithFns(c ...CardsScoreFn) *CardsScoringModel {
 	m.criteria = append(m.criteria, c...)
 
