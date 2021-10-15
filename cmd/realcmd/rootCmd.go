@@ -1,6 +1,7 @@
 package realcmd
 
 import (
+	"github.com/ful09003/cards/config"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -9,7 +10,6 @@ import (
 var (
 	// Flags
 	target     string     // Endpoint to scrape with cards
-	multFactor int    = 1 // Multiply all calculations by this
 	ll         string     // Log level, used to init rootCmd
 
 	rootCmd = &cobra.Command{
@@ -26,6 +26,7 @@ var (
 			logrus.SetLevel(getLogLevel(ll))
 			logrus.WithField("level", ll).Info("setting log level")
 			logrus.SetFormatter(&logrus.JSONFormatter{})
+			config.Cfg.LogConfig()
 
 			return nil
 		},
@@ -36,13 +37,28 @@ func init() {
 	// Much of init() here is taken from the Cobra docs
 	cobra.OnInitialize(initConfig)
 
+	// Set config global, weeee.
+	config.Cfg = parseConfigFile()
+
 	rootCmd.PersistentFlags().StringVarP(&target, "target", "t", "http://localhost:9100/metrics", "HTTP endpoint to evaluate")
-	rootCmd.PersistentFlags().IntVarP(&multFactor, "mult", "m", 1, "Set to maximum estimated hosts being scraped by Prometheus")
 	rootCmd.PersistentFlags().StringVar(&ll, "loglevel", "info", "log level to set")
 
 	viper.BindPFlag("target", rootCmd.PersistentFlags().Lookup("target"))
-	viper.BindPFlag("mult", rootCmd.PersistentFlags().Lookup("mult"))
 	viper.BindPFlag("log-level", rootCmd.PersistentFlags().Lookup("log-level"))
+}
+
+func parseConfigFile() *config.CardsConfig {
+	viper.AddConfigPath(".")
+	viper.SetConfigName("cards")
+	if err := viper.ReadInConfig(); err != nil {
+		logrus.Panic(err)
+	}
+	c := &config.CardsConfig{}
+	if err := viper.Unmarshal(c); err != nil {
+		logrus.Panic(err)
+	}
+
+	return c
 }
 
 func initConfig() {
