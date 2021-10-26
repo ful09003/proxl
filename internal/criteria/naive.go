@@ -42,13 +42,3 @@ func NaiveLabelScorer(mF *dto.MetricFamily) (int, error) {
 
 	return score, nil
 }
-
-func extractLabelPair(lPairs []*dto.LabelPair) map[string]int {
-	rVal := make(map[string]int)
-
-	for _, lP := range lPairs {
-		rVal[lP.GetName()] += 1
-	}
-
-	return rVal
-}
