@@ -374,11 +374,11 @@ func TestCardsLabelLengthEvaluator_Evaluate(t *testing.T) {
 			{
 				Label: []*dto.LabelPair{
 					{
-						Name: proto.String("firstlabel"),
+						Name:  proto.String("firstlabel"),
 						Value: proto.String("firstlabel-value"),
 					},
 					{
-						Name: proto.String("secondlabel"),
+						Name:  proto.String("secondlabel"),
 						Value: proto.String("secondlabel-value"),
 					},
 				},
@@ -404,24 +404,24 @@ func TestCardsLabelLengthEvaluator_Evaluate(t *testing.T) {
 			name: "length violates",
 			fields: fields{
 				maxLen: 2,
-				Type: LabelLengthScorer,
+				Type:   LabelLengthScorer,
 			},
 			args: args{
 				f: mFam,
 			},
-			want: true,
+			want:    true,
 			wantErr: false,
 		},
 		{
 			name: "length does not violate",
 			fields: fields{
 				maxLen: 5,
-				Type: LabelLengthScorer,
+				Type:   LabelLengthScorer,
 			},
 			args: args{
 				f: mFam,
 			},
-			want: false,
+			want:    false,
 			wantErr: false,
 		},
 	}
@@ -438,6 +438,63 @@ func TestCardsLabelLengthEvaluator_Evaluate(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("CardsLabelLengthEvaluator.Evaluate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCardsFamilyNameEvaluator_Evaluate(t *testing.T) {
+	mFams := []*dto.MetricFamily{
+		{
+			Name: proto.String("test_family_1"),
+			Metric: []*dto.Metric{},	
+		},
+		{
+			Name: proto.String("test_family_2"),
+			Metric: []*dto.Metric{},
+		},
+	}
+
+	type fields struct {
+		Type        ScoringType
+		excludeList []string
+	}
+	type args struct {
+		f *dto.MetricFamily
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "family name excluded",
+			fields: fields{
+				excludeList: []string{"test_family_1"},
+			},
+			args: args{
+				f: mFams[0],
+			},
+			want: true,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := &CardsFamilyNameEvaluator{
+				Type:        tt.fields.Type,
+				excludeList: tt.fields.excludeList,
+			}
+			got, err := r.Evaluate(tt.args.f)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CardsFamilyNameEvaluator.Evaluate() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("CardsFamilyNameEvaluator.Evaluate() = %v, want %v", got, tt.want)
 			}
 		})
 	}

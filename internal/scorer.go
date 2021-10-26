@@ -17,6 +17,8 @@ func (f ScoringType) String() string {
 		return "simple scorer"
 	case RegexScorer:
 		return "regex-capable scorer"
+	case FamilyExcluderScorer:
+		return "metric family name scorer"
 	default:
 		return "unknown scorer type"
 	}
@@ -25,7 +27,7 @@ func (f ScoringType) String() string {
 const (
 	SimpleScorer ScoringType = iota // A simplistic scorer
 	LabelLengthScorer // Label length scoring
-	LabelExcluderScorer // Label name exclusion
+	FamilyExcluderScorer // Family name exclusion
 	RegexScorer // A regex-capable scorer
 	OtherScorer // Everything else
 )
@@ -84,6 +86,20 @@ func (sp *CardsScoringProcessor) WithLabelLengthScorer(i int) (*CardsScoringProc
 	return setEvaluator(sp, newParser), nil
 }
 
+// WithMetricNameExclusionScorer sets the Processor to evaluate metric family names against a given input list.
+func (sp *CardsScoringProcessor) WithMetricNameExclusionScorer(n []string) (*CardsScoringProcessor, error) {
+	if sp.ScorerType != FamilyExcluderScorer {
+		return sp, errors.New("cannot use family name scorer with a non-family-name processor")
+	}
+
+	newParser := &CardsFamilyNameEvaluator{
+		Type: sp.ScorerType,
+		excludeList: n,
+	}
+
+	return setEvaluator(sp, newParser), nil
+}
+
 //setEvaluator sets the evaluator ofa CardsScoringProcessor, logging if the operation overwrites any existing processor.
 func setEvaluator(sp *CardsScoringProcessor, e CardsEvaluator) *CardsScoringProcessor {
 	if sp.Evaluator != nil {
@@ -132,7 +148,7 @@ func (r *CardsRegexEvaluator) Evaluate(f *dto.MetricFamily) (bool, error) {
 // Note: This Evaluator does not account for built-in Prometheus labels job and instance, thus maxLen should generally be set to reflect this.
 type CardsLabelLengthEvaluator struct {
 	Type ScoringType
-	maxLen int // Max length of unique
+	maxLen int // Max length of names this evaluator accepts
 }
 
 // Evaluate uses the first metric within a MetricFamily.
@@ -141,6 +157,15 @@ func (r *CardsLabelLengthEvaluator) Evaluate(f *dto.MetricFamily) (bool, error) 
 	return criteria.LabelLengthCheck(f.Metric[0], r.maxLen)
 }
 
+
+type CardsFamilyNameEvaluator struct {
+	Type ScoringType
+	excludeList []string // List of MetricFamily names to exclude
+}
+
+func (r *CardsFamilyNameEvaluator) Evaluate(f *dto.MetricFamily) (bool, error) {
+	return criteria.FamilyNameCheck(f, r.excludeList)
+}
 // CardsScoreFn is a function signature used to signal to a CardsScoringProcessor a pass/fail for the processor's purposes
 type CardsScoreFn func(mFam *dto.MetricFamily) (int, error)
 

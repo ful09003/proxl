@@ -11,7 +11,8 @@ import (
 var Cfg *CardsConfig
 
 type CardsConfig struct {
-	Scorers []CardsScorerConfig `yaml:"scorers"`
+	Scorers []CardsScorerConfig `mapstructure:"scorers"`
+	OutputType string `mapstructure:"output"`
 }
 
 type CardsScoringMethodConfig struct {
@@ -30,6 +31,8 @@ func (c *CardsConfig) LogConfig() {
 	log.WithFields(log.Fields{
 		"scorers_len": len(c.Scorers),
 	}).Debug("parsed cards configuration")
+
+	log.WithField("output-type", c.OutputType).Debug("choosing output type")
 
 	for _, v := range c.Scorers {
 		log.WithFields(log.Fields{
@@ -60,6 +63,8 @@ func ConfigToScorer(c CardsScorerConfig) (*internal.CardsScoringProcessor, error
 			return newProcessor, err
 		}
 		return newProcessor.WithLabelLengthScorer(i)
+	case internal.FamilyExcluderScorer:
+		return newProcessor.WithMetricNameExclusionScorer(c.Method.Criteria)
 	default:
 		return newProcessor, nil
 	}
@@ -72,6 +77,8 @@ func aToScorer(s string) internal.ScoringType {
 		return internal.RegexScorer
 	case "label_length_scorer":
 		return internal.LabelLengthScorer
+	case "family_name_scorer":
+		return internal.FamilyExcluderScorer
 	default:
 		return internal.OtherScorer
 	}

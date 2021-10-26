@@ -62,6 +62,7 @@ func parseConfigFile() *config.CardsConfig {
 }
 
 func initConfig() {
+	viper.SetEnvPrefix("cards")
 	viper.AutomaticEnv()
 }
 
