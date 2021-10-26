@@ -8,11 +8,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var testFn = func(mFam *dto.MetricFamily) (int, error) {
-	return 1, nil
-}
-
-
 func TestNewScoringProcessor(t *testing.T) {
 	type args struct {
 		name        string
