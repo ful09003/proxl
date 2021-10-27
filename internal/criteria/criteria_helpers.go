@@ -8,12 +8,12 @@ import (
 // extractLabel returns two strings from a LabelPair, representing the label name and value
 func extractLabel(lPair *dto.LabelPair) (string, string) {
 	n, v := lPair.GetName(), lPair.GetValue()
-	
+
 	log.WithFields(log.Fields{
 		"name": n,
-		"val": v,
+		"val":  v,
 	}).Debug("extracted lpair")
-	
+
 	return n, v
 }
 

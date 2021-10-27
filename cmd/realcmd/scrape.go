@@ -14,7 +14,7 @@ import (
 
 type flaggedEntity struct {
 	ScorerName, FamilyName, ScorerDesc string
-	ScorerCriticality int
+	ScorerCriticality                  int
 }
 
 func (f *flaggedEntity) String() string {
@@ -34,7 +34,7 @@ func scrape(cmd *cobra.Command, args []string) error {
 	}
 
 	log.WithField("scorers_len", len(scorers)).Debug("configured scorers")
-	
+
 	scraper := internal.NewCardsHttpScraper(target, 1)
 
 	mFam, err := scraper.ScrapeTarget()
@@ -54,16 +54,16 @@ func scrape(cmd *cobra.Command, args []string) error {
 			}
 			if flagged {
 				flaggedEntities = append(flaggedEntities, flaggedEntity{
-					ScorerName: s.Name,
-					FamilyName: fName,
-					ScorerDesc: s.Purpose,
+					ScorerName:        s.Name,
+					FamilyName:        fName,
+					ScorerDesc:        s.Purpose,
 					ScorerCriticality: s.Criticality,
 				})
 
 				log.WithFields(log.Fields{
 					"family_name": fName,
 					"scorer_name": s.Name,
-					"hint": s.Purpose,
+					"hint":        s.Purpose,
 				}).Debug("family flagged")
 			}
 		}

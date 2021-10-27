@@ -16,15 +16,15 @@ func TestLabelLengthCheck(t *testing.T) {
 			{
 				Label: []*dto.LabelPair{
 					{
-						Name: proto.String("firstlabel"),
+						Name:  proto.String("firstlabel"),
 						Value: proto.String("firstlabel-value"),
 					},
 					{
-						Name: proto.String("secondlabel"),
+						Name:  proto.String("secondlabel"),
 						Value: proto.String("secondlabel-value"),
 					},
 					{
-						Name: proto.String("thirdlabel"),
+						Name:  proto.String("thirdlabel"),
 						Value: proto.String("thirdlabel-value"),
 					},
 				},
@@ -56,7 +56,7 @@ func TestLabelLengthCheck(t *testing.T) {
 				m: mFam,
 				l: 3,
 			},
-			want: true,
+			want:    true,
 			wantErr: false,
 		},
 		{
@@ -65,7 +65,7 @@ func TestLabelLengthCheck(t *testing.T) {
 				m: mFam,
 				l: 5,
 			},
-			want: false,
+			want:    false,
 			wantErr: false,
 		},
 		{
@@ -74,7 +74,7 @@ func TestLabelLengthCheck(t *testing.T) {
 				m: mFamWithNoLabels,
 				l: 5,
 			},
-			want: false,
+			want:    false,
 			wantErr: false,
 		},
 	}

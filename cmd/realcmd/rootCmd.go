@@ -9,8 +9,8 @@ import (
 
 var (
 	// Flags
-	target     string     // Endpoint to scrape with cards
-	ll         string     // Log level, used to init rootCmd
+	target string // Endpoint to scrape with cards
+	ll     string // Log level, used to init rootCmd
 
 	rootCmd = &cobra.Command{
 		Use:   "cards",
