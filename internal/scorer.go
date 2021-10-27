@@ -3,7 +3,7 @@ package internal
 import (
 	"errors"
 
-	"github.com/ful09003/cards/internal/criteria"
+	"github.com/ful09003/proxl/internal/criteria"
 	log "github.com/sirupsen/logrus"
 
 	dto "github.com/prometheus/client_model/go"

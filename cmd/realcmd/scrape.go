@@ -6,8 +6,8 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/ful09003/cards/config"
-	"github.com/ful09003/cards/internal"
+	"github.com/ful09003/proxl/config"
+	"github.com/ful09003/proxl/internal"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

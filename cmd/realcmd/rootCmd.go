@@ -1,7 +1,7 @@
 package realcmd
 
 import (
-	"github.com/ful09003/cards/config"
+	"github.com/ful09003/proxl/config"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

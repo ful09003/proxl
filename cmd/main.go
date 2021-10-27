@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	cmd "github.com/ful09003/cards/cmd/realcmd"
+	cmd "github.com/ful09003/proxl/cmd/realcmd"
 	"github.com/sirupsen/logrus"
 )
 

@@ -1,4 +1,4 @@
-module github.com/ful09003/cards
+module github.com/ful09003/proxl
 
 go 1.16
 

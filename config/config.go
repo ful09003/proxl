@@ -4,7 +4,7 @@ package config
 import (
 	"strconv"
 
-	"github.com/ful09003/cards/internal"
+	"github.com/ful09003/proxl/internal"
 	log "github.com/sirupsen/logrus"
 )
 
