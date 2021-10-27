@@ -3,7 +3,7 @@ package realcmd
 import (
 	"os"
 
-	"github.com/ful09003/cards/internal"
+	"github.com/ful09003/proxl/internal"
 	expfmt "github.com/prometheus/common/expfmt"
 	"github.com/spf13/cobra"
 )

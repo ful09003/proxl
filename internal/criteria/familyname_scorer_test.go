@@ -27,7 +27,7 @@ func TestFamilyNameCheck(t *testing.T) {
 				},
 				n: []string{"matching_family_name", "some_other_name"},
 			},
-			want: true,
+			want:    true,
 			wantErr: false,
 		},
 		{
@@ -38,7 +38,7 @@ func TestFamilyNameCheck(t *testing.T) {
 				},
 				n: []string{"matching_family_name", "some_other_name"},
 			},
-			want: false,
+			want:    false,
 			wantErr: false,
 		},
 	}

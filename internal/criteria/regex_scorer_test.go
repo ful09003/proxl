@@ -25,18 +25,18 @@ func TestMetricLabelRegex(t *testing.T) {
 				m: &dto.Metric{
 					Label: []*dto.LabelPair{
 						{
-							Name: proto.String("plain-name"),
+							Name:  proto.String("plain-name"),
 							Value: proto.String("5f8d0583-d61c-4dbd-b2f2-bc3b2a7463bd"),
 						},
 						{
-							Name: proto.String("another-plain-name"),
+							Name:  proto.String("another-plain-name"),
 							Value: proto.String("4444444"),
 						},
 					},
 				},
 				p: "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$",
 			},
-			want: true,
+			want:    true,
 			wantErr: false,
 		},
 		// No matching regex
@@ -46,18 +46,18 @@ func TestMetricLabelRegex(t *testing.T) {
 				m: &dto.Metric{
 					Label: []*dto.LabelPair{
 						{
-							Name: proto.String("plain-name"),
+							Name:  proto.String("plain-name"),
 							Value: proto.String("plain-value"),
 						},
 						{
-							Name: proto.String("another-plain-name"),
+							Name:  proto.String("another-plain-name"),
 							Value: proto.String("another-plain-value"),
 						},
 					},
 				},
 				p: "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$",
 			},
-			want: false,
+			want:    false,
 			wantErr: false,
 		},
 		// Matches label names also
@@ -67,14 +67,14 @@ func TestMetricLabelRegex(t *testing.T) {
 				m: &dto.Metric{
 					Label: []*dto.LabelPair{
 						{
-							Name: proto.String("5f8d0583-d61c-4dbd-b2f2-bc3b2a7463bd"),
+							Name:  proto.String("5f8d0583-d61c-4dbd-b2f2-bc3b2a7463bd"),
 							Value: proto.String("groovy"),
 						},
 					},
 				},
 				p: "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$",
 			},
-			want: true,
+			want:    true,
 			wantErr: false,
 		},
 		// Non-compiling regex, at least in current implementation :P
@@ -84,7 +84,7 @@ func TestMetricLabelRegex(t *testing.T) {
 				m: &dto.Metric{},
 				p: "\\😎",
 			},
-			want: false,
+			want:    false,
 			wantErr: true,
 		},
 	}

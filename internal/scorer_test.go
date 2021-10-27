@@ -371,11 +371,11 @@ func TestCardsLabelLengthEvaluator_Evaluate(t *testing.T) {
 func TestCardsFamilyNameEvaluator_Evaluate(t *testing.T) {
 	mFams := []*dto.MetricFamily{
 		{
-			Name: proto.String("test_family_1"),
-			Metric: []*dto.Metric{},	
+			Name:   proto.String("test_family_1"),
+			Metric: []*dto.Metric{},
 		},
 		{
-			Name: proto.String("test_family_2"),
+			Name:   proto.String("test_family_2"),
 			Metric: []*dto.Metric{},
 		},
 	}
@@ -403,7 +403,7 @@ func TestCardsFamilyNameEvaluator_Evaluate(t *testing.T) {
 			args: args{
 				f: mFams[0],
 			},
-			want: true,
+			want:    true,
 			wantErr: false,
 		},
 	}

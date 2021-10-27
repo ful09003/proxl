@@ -3,7 +3,7 @@ package internal
 import (
 	"errors"
 
-	"github.com/ful09003/cards/internal/criteria"
+	"github.com/ful09003/proxl/internal/criteria"
 	log "github.com/sirupsen/logrus"
 
 	dto "github.com/prometheus/client_model/go"
@@ -25,38 +25,38 @@ func (f ScoringType) String() string {
 }
 
 const (
-	SimpleScorer ScoringType = iota // A simplistic scorer
-	LabelLengthScorer // Label length scoring
-	FamilyExcluderScorer // Family name exclusion
-	RegexScorer // A regex-capable scorer
-	OtherScorer // Everything else
+	SimpleScorer         ScoringType = iota // A simplistic scorer
+	LabelLengthScorer                       // Label length scoring
+	FamilyExcluderScorer                    // Family name exclusion
+	RegexScorer                             // A regex-capable scorer
+	OtherScorer                             // Everything else
 )
 
 type CardsScoringProcessor struct {
-	Name string // Name of this processor
-	Purpose string // Purpose of this processor
-	ScorerType ScoringType // Type of scorer this is
-	Criticality int // How important this scorer is to the user
+	Name        string      // Name of this processor
+	Purpose     string      // Purpose of this processor
+	ScorerType  ScoringType // Type of scorer this is
+	Criticality int         // How important this scorer is to the user
 
 	Evaluator CardsEvaluator
 }
 
 // NewScoringProcessor creates and returns a pointer to a Cards Scoring Processor
 func NewScoringProcessor(name, purpose string, pT ScoringType, criticality int) (*CardsScoringProcessor, error) {
-	
+
 	if name == "" || purpose == "" {
 		return &CardsScoringProcessor{}, errors.New("scoring processor must have name and purpose")
 	}
 
 	return &CardsScoringProcessor{
-		Name: name,
-		Purpose: purpose,
+		Name:        name,
+		Purpose:     purpose,
 		Criticality: criticality,
-		ScorerType: pT,
+		ScorerType:  pT,
 	}, nil
 }
 
-// WithRegexScorer accepts a regex-compatible string and ensures that the Processor has a regex parser which uses the input pattern. 
+// WithRegexScorer accepts a regex-compatible string and ensures that the Processor has a regex parser which uses the input pattern.
 func (sp *CardsScoringProcessor) WithRegexScorer(s string) (*CardsScoringProcessor, error) {
 
 	if sp.ScorerType != RegexScorer {
@@ -64,7 +64,7 @@ func (sp *CardsScoringProcessor) WithRegexScorer(s string) (*CardsScoringProcess
 	}
 
 	newParser := &CardsRegexEvaluator{
-		r: s,
+		r:    s,
 		Type: sp.ScorerType,
 	}
 
@@ -80,7 +80,7 @@ func (sp *CardsScoringProcessor) WithLabelLengthScorer(i int) (*CardsScoringProc
 
 	newParser := &CardsLabelLengthEvaluator{
 		maxLen: i,
-		Type: sp.ScorerType,
+		Type:   sp.ScorerType,
 	}
 
 	return setEvaluator(sp, newParser), nil
@@ -93,7 +93,7 @@ func (sp *CardsScoringProcessor) WithMetricNameExclusionScorer(n []string) (*Car
 	}
 
 	newParser := &CardsFamilyNameEvaluator{
-		Type: sp.ScorerType,
+		Type:        sp.ScorerType,
 		excludeList: n,
 	}
 
@@ -125,7 +125,7 @@ type CardsEvaluator interface {
 // CardsRegexEvaluator is a struct representing a regex-utilizing evaluator
 type CardsRegexEvaluator struct {
 	Type ScoringType
-	r string // Regex string to be evaluated
+	r    string // Regex string to be evaluated
 }
 
 // Evaluate iterates through a MetricFamily's Metrics.
@@ -147,7 +147,7 @@ func (r *CardsRegexEvaluator) Evaluate(f *dto.MetricFamily) (bool, error) {
 // CardsLabelLengthEvaluator is an evaluator which scores based on slice length of unique label names.
 // Note: This Evaluator does not account for built-in Prometheus labels job and instance, thus maxLen should generally be set to reflect this.
 type CardsLabelLengthEvaluator struct {
-	Type ScoringType
+	Type   ScoringType
 	maxLen int // Max length of names this evaluator accepts
 }
 
@@ -157,9 +157,8 @@ func (r *CardsLabelLengthEvaluator) Evaluate(f *dto.MetricFamily) (bool, error) 
 	return criteria.LabelLengthCheck(f.Metric[0], r.maxLen)
 }
 
-
 type CardsFamilyNameEvaluator struct {
-	Type ScoringType
+	Type        ScoringType
 	excludeList []string // List of MetricFamily names to exclude
 }
 

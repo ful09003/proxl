@@ -14,9 +14,9 @@ func MetricLabelRegex(m *dto.Metric, p string) (bool, error) {
 		return false, err
 	}
 
-	for _, l := range m.Label{
+	for _, l := range m.Label {
 		lName, lVal := extractLabel(l)
-		if exp.MatchString(lVal) || exp.MatchString(lName){
+		if exp.MatchString(lVal) || exp.MatchString(lName) {
 			return true, nil
 		}
 	}

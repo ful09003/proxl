@@ -4,27 +4,27 @@ package config
 import (
 	"strconv"
 
-	"github.com/ful09003/cards/internal"
+	"github.com/ful09003/proxl/internal"
 	log "github.com/sirupsen/logrus"
 )
 
 var Cfg *CardsConfig
 
 type CardsConfig struct {
-	Scorers []CardsScorerConfig `mapstructure:"scorers"`
-	OutputType string `mapstructure:"output"`
+	Scorers    []CardsScorerConfig `mapstructure:"scorers"`
+	OutputType string              `mapstructure:"output"`
 }
 
 type CardsScoringMethodConfig struct {
-	Type string `mapstructure:"type"`
+	Type     string   `mapstructure:"type"`
 	Criteria []string `mapstructure:"criteria"`
 }
 
 type CardsScorerConfig struct {
-	Name string `mapstructure:"name"`
-	Purpose string `mapstructure:"description"`
-	Criticality int `mapstructure:"criticality"`
-	Method CardsScoringMethodConfig `mapstructure:"scoring-method"`
+	Name        string                   `mapstructure:"name"`
+	Purpose     string                   `mapstructure:"description"`
+	Criticality int                      `mapstructure:"criticality"`
+	Method      CardsScoringMethodConfig `mapstructure:"scoring-method"`
 }
 
 func (c *CardsConfig) LogConfig() {
@@ -36,11 +36,11 @@ func (c *CardsConfig) LogConfig() {
 
 	for _, v := range c.Scorers {
 		log.WithFields(log.Fields{
-			"scorer_name": v.Name,
-			"scorer_purpose": v.Purpose,
+			"scorer_name":        v.Name,
+			"scorer_purpose":     v.Purpose,
 			"scorer_criticality": v.Criticality,
-			"scorer_type": v.Method.Type,
-			"scorer_criteria": v.Method.Criteria,
+			"scorer_type":        v.Method.Type,
+			"scorer_criteria":    v.Method.Criteria,
 		}).Debug("scorer configuration")
 	}
 }
@@ -54,7 +54,7 @@ func ConfigToScorer(c CardsScorerConfig) (*internal.CardsScoringProcessor, error
 	}
 
 	//TODO(mfuller): The below switch is probably not very scalable, but I'm not sure a better approach at this time
-	switch convType{
+	switch convType {
 	case internal.RegexScorer:
 		return newProcessor.WithRegexScorer(c.Method.Criteria[0])
 	case internal.LabelLengthScorer:
@@ -72,7 +72,7 @@ func ConfigToScorer(c CardsScorerConfig) (*internal.CardsScoringProcessor, error
 }
 
 func aToScorer(s string) internal.ScoringType {
-	switch s{
+	switch s {
 	case "regex_scorer":
 		return internal.RegexScorer
 	case "label_length_scorer":
