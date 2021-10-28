@@ -25,11 +25,12 @@ func (f ScoringType) String() string {
 }
 
 const (
-	SimpleScorer         ScoringType = iota // A simplistic scorer
-	LabelLengthScorer                       // Label length scoring
-	FamilyExcluderScorer                    // Family name exclusion
-	RegexScorer                             // A regex-capable scorer
-	OtherScorer                             // Everything else
+	SimpleScorer            ScoringType = iota // A simplistic scorer
+	LabelLengthScorer                          // Label length scoring
+	FamilyExcluderScorer                       // Family name exclusion
+	FamilyCardinalityScorer                    // Family cardinality scorer
+	RegexScorer                                // A regex-capable scorer
+	OtherScorer                                // Everything else
 )
 
 type CardsScoringProcessor struct {
@@ -100,6 +101,19 @@ func (sp *CardsScoringProcessor) WithMetricNameExclusionScorer(n []string) (*Car
 	return setEvaluator(sp, newParser), nil
 }
 
+func (sp *CardsScoringProcessor) WithMetricFamilyLabelCardinalityScorer(i int) (*CardsScoringProcessor, error) {
+	if sp.ScorerType != FamilyCardinalityScorer {
+		return sp, errors.New("cannot use family cardinality scorer with a non-family-cardinality processor")
+	}
+
+	newParser := &CardsFamilyLabelCardinalityEvaluator{
+		Type:                sp.ScorerType,
+		maxLabelCardinality: i,
+	}
+
+	return setEvaluator(sp, newParser), nil
+}
+
 //setEvaluator sets the evaluator ofa CardsScoringProcessor, logging if the operation overwrites any existing processor.
 func setEvaluator(sp *CardsScoringProcessor, e CardsEvaluator) *CardsScoringProcessor {
 	if sp.Evaluator != nil {
@@ -164,4 +178,23 @@ type CardsFamilyNameEvaluator struct {
 
 func (r *CardsFamilyNameEvaluator) Evaluate(f *dto.MetricFamily) (bool, error) {
 	return criteria.FamilyNameCheck(f, r.excludeList)
+}
+
+// CardsFamilyCardinalityEvaluator is an evaluator which scores a MetricFamily based on max cardinality of any single label within the Family.
+// For example, if a MetricFamily has (i) 2 labels, (ii) 10 unique values for the first label, and (iii) 20 unique values for the second label,
+// a criteria of max-length:15 would evaluate true (due to the second label).
+type CardsFamilyLabelCardinalityEvaluator struct {
+	Type                ScoringType
+	maxLabelCardinality int // Max uniqueness allowed for any label in the MetricFamily
+}
+
+// Evaluate scores each metric in a MetricFamily to determine if any labels have cardinality exceeding the desired maximum.
+func (r *CardsFamilyLabelCardinalityEvaluator) Evaluate(f *dto.MetricFamily) (bool, error) {
+	if f.GetType() == dto.MetricType_HISTOGRAM {
+		// Skip histograms
+		return false, nil
+	}
+
+	return criteria.FamilyLabelMaxCardinality(f, r.maxLabelCardinality)
+
 }

@@ -58,17 +58,24 @@ func ConfigToScorer(c CardsScorerConfig) (*internal.CardsScoringProcessor, error
 	case internal.RegexScorer:
 		return newProcessor.WithRegexScorer(c.Method.Criteria[0])
 	case internal.LabelLengthScorer:
-		i, err := strconv.Atoi(c.Method.Criteria[0])
-		if err != nil {
-			return newProcessor, err
-		}
-		return newProcessor.WithLabelLengthScorer(i)
+		return newProcessor.WithLabelLengthScorer(asInt(c.Method.Criteria[0]))
 	case internal.FamilyExcluderScorer:
 		return newProcessor.WithMetricNameExclusionScorer(c.Method.Criteria)
+	case internal.FamilyCardinalityScorer:
+		return newProcessor.WithMetricFamilyLabelCardinalityScorer(asInt(c.Method.Criteria[0]))
 	default:
 		return newProcessor, nil
 	}
 
+}
+
+func asInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		log.WithError(err).Error("failed converting string to int")
+	}
+
+	return i
 }
 
 func aToScorer(s string) internal.ScoringType {
@@ -79,6 +86,8 @@ func aToScorer(s string) internal.ScoringType {
 		return internal.LabelLengthScorer
 	case "family_name_scorer":
 		return internal.FamilyExcluderScorer
+	case "family_label_cardinality_scorer":
+		return internal.FamilyCardinalityScorer
 	default:
 		return internal.OtherScorer
 	}
