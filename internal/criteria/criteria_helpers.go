@@ -26,3 +26,28 @@ func extractLabelPair(lPairs []*dto.LabelPair) map[string]int {
 
 	return rVal
 }
+
+// extractLabelCardinalityFromPairs iterates a slice of LabelPairs.
+// Upon finding the provided label of lName, and a unique label value, an int
+func extractLabelValuesForName(lName string, lPairs []*dto.LabelPair) []string {
+	allValsForLabelName := make([]string, 1)
+
+	for _, l := range lPairs {
+		labelName, labelValue := extractLabel(l)
+		if labelName == lName {
+			// e.g. service=cool-service, where lName == service
+			allValsForLabelName = append(allValsForLabelName, labelValue)
+		}
+	}
+
+	return allValsForLabelName
+}
+
+func inSlice(val string, s []string) bool {
+	for _, v := range s {
+		if v == val {
+			return true
+		}
+	}
+	return false
+}
